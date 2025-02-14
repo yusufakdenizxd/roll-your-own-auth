@@ -1,13 +1,23 @@
 "use client";
 
-import { useActionState } from "react";
+import { startTransition, useActionState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { login } from "./actions";
 
+
 function LoginForm() {
   const [state, action] = useActionState(login, undefined);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    startTransition(() => {
+      action(formData);
+    });
+  };
+
   return (
-    <form className="flex max-w-[300px] flex-col gap-2" action={action}>
+    <form className="flex max-w-[300px] flex-col gap-2" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-2">
         <input type="text" name="email" id="email" placeholder="Email" />
       </div>
